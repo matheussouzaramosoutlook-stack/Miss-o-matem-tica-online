@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Missão Matemática</title>
+<style>
+body{font-family:Arial;background:#111936;color:white;text-align:center;margin:0;padding:15px}
+h1{color:#ffdd57}
+#tabuleiro{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:450px;margin:20px auto}
+.casa{background:#3067a8;border-radius:9px;min-height:55px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.ativa{background:#ffc83d;color:#111}
+button{background:#28c76f;color:#111;border:0;border-radius:10px;padding:13px;margin:7px;font-weight:bold}
+input{padding:12px;border-radius:8px;max-width:180px}
+#pergunta{background:#26365b;padding:15px;border-radius:12px;margin:15px auto;max-width:420px}
+</style>
+</head>
+<body>
+<h1>🎲 Missão Matemática</h1>
+<p>Desafio de matemática do 7º ano</p>
+<input id="nome" placeholder="Nome do jogador">
+<button onclick="entrar()">Começar</button>
+<h2 id="jogador"></h2>
+<div id="tabuleiro"></div>
+<button onclick="jogar()">🎲 Jogar dado</button>
+<div id="pergunta">Responda às perguntas para avançar!</div>
+<script>
+let pos=0,nome="Jogador",esperando=false;
+const questoes=[
+["Quanto é 25% de 200?",50],
+["Resolva: 3x + 5 = 20",5],
+["Quanto é (-8) + 13?",5],
+["Qual é a média de 4, 6 e 8?",6],
+["Quanto é 2/3 de 30?",20],
+["Quanto é 15% de 100?",15],
+["Qual é a probabilidade, em %, de sair cara em uma moeda justa?",50],
+["Quanto é 7 × (-3)?",-21],
+["Resolva: 2x = 18",9],
+["Quanto é 1/4 de 80?",20]
+];
+function desenhar(){
+let t=document.getElementById("tabuleiro");
+t.innerHTML="";
+for(let i=0;i<25;i++){
+let c=document.createElement("div");
+c.className="casa"+(i===pos?" ativa":"");
+c.textContent=(i+1)+(i===pos?" 🧑":"");
+t.appendChild(c);
+}}
+function entrar(){
+nome=document.getElementById("nome").value.trim()||"Jogador";
+document.getElementById("jogador").textContent="Jogador: "+nome;
+}
+function jogar(){
+if(esperando)return;
+if(pos>=24)return;
+let dado=Math.floor(Math.random()*6)+1;
+let q=questoes[Math.floor(Math.random()*questoes.length)];
+esperando=true;
+document.getElementById("pergunta").innerHTML=
+"<h3>🎲 Dado: "+dado+"</h3><p>"+q[0]+"</p>"+
+'<input id="resposta" type="number" placeholder="Resposta">'+
+'<button id="verificar">Responder</button>';
+document.getElementById("verificar").onclick=()=>{
+let r=Number(document.getElementById("resposta").value);
+if(document.getElementById("resposta").value.trim()!==""&&r===q[1]){
+pos=Math.min(24,pos+dado);
+alert("✅ Acertou! Avançou "+dado+" casas.");
+}else alert("❌ Resposta correta: "+q[1]);
+esperando=false;
+desenhar();
+document.getElementById("pergunta").textContent=
+pos===24?"🏆 Parabéns! Você venceu!":"Jogue o dado novamente!";
+};
+}
+desenhar();
+</script>
+</body>
+</html>
